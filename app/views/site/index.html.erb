@@ -1,2 +1,17 @@
-<h1>Site#index</h1>
-<p>Find me in app/views/site/index.html.erb</p>
+<div>
+	<h2>Lassin muistuttaja</h2>
+	<table>
+		<tr>
+			<th>Muistutus</th>
+			<th>Deadline</th>
+			<th>Kellonaika</th>
+		</tr>
+		<% Reminder.all.each do |reminder| %>
+			<tr>
+				<td><%= reminder.content %></td>
+				<td><%= reminder.due_to %></td>
+				<td><%= reminder.due_time %></td>
+			</tr>
+		<% end %>
+	</table>
+</div>
