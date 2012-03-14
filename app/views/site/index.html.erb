@@ -1,17 +1,104 @@
 <div>
-	<h2>Lassin muistuttaja</h2>
-	<table>
-		<tr>
-			<th>Muistutus</th>
-			<th>Deadline</th>
-			<th>Kellonaika</th>
-		</tr>
+	<h2 id="index_h2">Lassin muistuttaja</h2>
+	<div id="feedback"></div>
+	<div id="reminders_table_wrapper">
+		<div id="reminders_header_row">
+			<div class="reminder_contents">Muistutus</div>
+			<div class="reminder_dates">Deadline</div>
+			<div class="reminder_times">Kellonaika</div>
+		</div>
+		<div class="clearer"></div>
 		<% Reminder.all.each do |reminder| %>
-			<tr>
-				<td><%= reminder.content %></td>
-				<td><%= reminder.due_to %></td>
-				<td><%= reminder.due_time %></td>
-			</tr>
+			<div id="<%= reminder.id %>_reminder" class="reminder" onclick="fill_manager_with_data(<%= reminder.id%>);">
+				<div class="reminder_contents"><%= reminder.content %></div>
+				<div class="reminder_dates"><%= reminder.due_to.strftime("%d.%m.%Y") %></div>
+				<div class="reminder_times"><%= reminder.due_to.strftime("%H:%M") %></div>
+			</div>
+			<div class="clearer"></div>
 		<% end %>
-	</table>
+		</table>
+	</div>
+	<div id="reminder_manager_wrapper">
+		<p>
+			Muistutus <br />
+			<input type="text" id="manager_content">
+		</p>
+		<p>
+			Paivamaara <br />
+			<input type="text" id="manager_date">
+		</p>
+		<p>
+			Kellonaika <br />
+			<input type="text" id="manager_time">
+		</p>
+		
+		<input type="hidden" id="reminder_id" value="-1" />
+		
+		<input type="button" value="Luo uusi" onclick="create_new();" class="manager_button">
+		<input type="button" value="Tallenna muutokset" onclick="save_current();" class="manager_button">
+		
+	</div>
+	<div class="clearer"></div>
 </div>
+
+<script>
+	function fill_manager_with_data(id) {
+		reminder = $('#'+id+'_reminder');
+		
+		content = reminder.find('.reminder_contents').html();
+		date = reminder.find('.reminder_dates').html();
+		time = reminder.find('.reminder_times').html();
+		
+		$('#manager_content').val(content);
+		$('#manager_date').val(date);
+		$('#manager_time').val(time);
+		$('#reminder_id').val(id);
+	}
+	
+	function create_new() {
+		
+	}
+	
+	function save_current() {
+		var id = $('#reminder_id').val();
+		if (!(id == "-1")) {
+			content = $('manager_content').val();
+			date = $('manager_content').val();
+			time = $('manager_content').val();
+			
+			var url = "/save_reminder/"+id+"?content="+content+"&date="+date+"&time="+time;
+			
+			$.ajax({
+				url: url,
+				cache: false,
+				success: function(html) {
+					values = html.split(",");
+					set_feedback(values[0], values[1], 5000);
+				}
+			});
+		} else {
+			set_feedback("error", "Valitse ensin muokattava muistutus", 5000);
+		}
+	}
+	
+	function set_feedback(nature, feedback, time_to_show) {
+		if (nature == "error") {
+			$("#feedback").attr("class", "warning");
+		} else if (nature == "ok") {
+			$("#feedback").attr("class", "ok");
+		} else {
+			alert("Crash!");
+		}
+		
+		$("#feedback").html(feedback);
+		clear_feedback(time_to_show);
+	}
+	
+	function clear_feedback(time) {
+		setTimeout(function() {
+			$('#feedback').html("");
+			$('#feedback').attr("class", "");
+		}, time);
+	}
+	
+</script>

@@ -1,3 +1,99 @@
 // Place all the styles related to the Site controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+$reminder_bg: #12E;
+$reminder_hover_bg: #12F;
+
+#feedback {
+  margin-right: 10px;
+  margin-left: 10px;
+  text-align: center;
+  padding: 5px; 
+}
+
+.warning {
+  background: #E11;
+  border: solid 1px black;
+}
+
+.ok {
+  background: #1E1;
+  border: solid 1px black;
+}
+
+#reminders_table_wrapper {
+  float: left;
+  width: 500px;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid black;
+}
+
+#reminder_manager_wrapper {
+  float: right;
+  width: 200px;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid black;
+}
+
+#reminders_header_row {
+  width: 100%;
+  float: none;
+  clear: both;
+  font-weight: bold;
+  font-size: 22px;
+}
+
+.reminder_contents {
+  width: 300px;
+  padding: 0px;
+  border: 0px;
+  margin: 0px;
+  float: left;
+  background-color: inherit;
+}
+
+.reminder_dates {
+  width: 100px;
+  padding: 0px;
+  border: 0px;
+  margin: 0px;
+  float: left;
+  background-color: inherit;
+}
+
+.reminder_times {
+  width: 100px;
+  padding: 0px;
+  border: 0px;
+  margin: 0px;
+  float: left;
+  background-color: inherit;
+}
+
+
+.reminder {
+  background-color: $reminder_bg;
+  font-size: 20px;
+}
+
+.reminder:hover {
+  background-color: $reminder_hover_bg;
+  cursor: pointer;
+}
+
+#index_h2 {
+  text-align: center;
+  width: 100%;
+  margin: 10px;
+  font-size: 26px;
+}
+
+.manager_button {
+  width: 90%;
+  margin-right: 5%;
+  margin-left: 5%;
+  margin-top: 5px;
+}

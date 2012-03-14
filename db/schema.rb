@@ -15,8 +15,7 @@ ActiveRecord::Schema.define(:version => 20120314192655) do
 
   create_table "reminders", :force => true do |t|
     t.string   "content"
-    t.date     "due_to"
-    t.time     "due_time"
+    t.datetime "due_to"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end

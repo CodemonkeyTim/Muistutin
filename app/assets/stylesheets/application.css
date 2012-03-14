@@ -11,3 +11,14 @@
  *= require_self
  *= require_tree .
 */
+
+#page {
+	width: 800px;
+	margin: auto;
+	border: black 1px solid;
+}
+
+.clearer {
+	clear: both;
+	width: 100%;
+}
