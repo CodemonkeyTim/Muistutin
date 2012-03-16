@@ -5,18 +5,19 @@
 		<div id="reminders_header_row">
 			<div class="reminder_contents">Muistutus</div>
 			<div class="reminder_dates">Deadline</div>
-			<div class="reminder_times">Kellonaika</div>
+			<div class="reminder_times">Klo</div>
 		</div>
 		<div class="clearer"></div>
-		<% Reminder.all.each do |reminder| %>
-			<div id="<%= reminder.id %>_reminder" class="reminder" onclick="fill_manager_with_data(<%= reminder.id%>);">
-				<div class="reminder_contents"><%= reminder.content %></div>
-				<div class="reminder_dates"><%= reminder.due_to.strftime("%d.%m.%Y") %></div>
-				<div class="reminder_times"><%= reminder.due_to.strftime("%H:%M") %></div>
-			</div>
-			<div class="clearer"></div>
-		<% end %>
-		</table>
+		<span id="reminders">
+			<% Reminder.find(:all, :order => "due_to").each do |reminder| %>
+				<div id="<%= reminder.id %>_reminder" class="reminder" onclick="fill_manager_with_data(<%= reminder.id%>);">
+					<div class="reminder_contents"><%= reminder.content %></div>
+					<div class="reminder_dates"><%= reminder.due_to.strftime("%d.%m.%Y") %></div>
+					<div class="reminder_times"><%= reminder.due_to.strftime("%H:%M") %></div>
+				</div>
+				<div class="clearer"></div>
+			<% end %>
+		</span>
 	</div>
 	<div id="reminder_manager_wrapper">
 		<p>
@@ -36,6 +37,7 @@
 		
 		<input type="button" value="Luo uusi" onclick="create_new();" class="manager_button">
 		<input type="button" value="Tallenna muutokset" onclick="save_current();" class="manager_button">
+		<input type="button" value="Poista" onclick="delete_current();" class="manager_button">
 		
 	</div>
 	<div class="clearer"></div>
@@ -56,28 +58,65 @@
 	}
 	
 	function create_new() {
-		
+		content = $('#manager_content').val();
+		date = $('#manager_date').val();
+		time = $('#manager_time').val();
+			
+		var url = "/create_new/?content="+content+"&date="+date+"&time="+time;
+			
+		$.ajax({
+			url: url,
+			cache: false,
+			success: function(response) {
+				values = response.split(";");
+				set_feedback(values[0], values[1], 5000);
+				update_table();
+			}
+		});
 	}
 	
 	function save_current() {
 		var id = $('#reminder_id').val();
 		if (!(id == "-1")) {
-			content = $('manager_content').val();
-			date = $('manager_content').val();
-			time = $('manager_content').val();
+			content = $('#manager_content').val();
+			date = $('#manager_date').val();
+			time = $('#manager_time').val();
 			
 			var url = "/save_reminder/"+id+"?content="+content+"&date="+date+"&time="+time;
 			
 			$.ajax({
-				url: url,
+				url: find(:all, :order => "due_to ASC"url,
 				cache: false,
-				success: function(html) {
-					values = html.split(",");
+				success: function(response) {
+					values = response.split(";");
 					set_feedback(values[0], values[1], 5000);
+					update_table();
 				}
 			});
 		} else {
 			set_feedback("error", "Valitse ensin muokattava muistutus", 5000);
+		}
+	}
+	
+	function delete_current() {
+		var id = $('#reminder_id').val();
+		if (!(id == "-1")) {
+			$.ajax({
+				url: "/delete_reminder/"+id,
+				cache: false,
+				success: function(response) {
+					values = response.split(";");
+					set_feedback(values[0], values[1], 5000);
+					update_table();
+					
+					$('#manager_content').val("");
+					$('#manager_date').val("");
+					$('#manager_time').val("");
+					$('#reminder_id').val("-1");
+				}
+			});
+		} else {
+			set_feedback("error", "Valitse ensin poistettava muistutus", 5000);
 		}
 	}
 	
@@ -99,6 +138,16 @@
 			$('#feedback').html("");
 			$('#feedback').attr("class", "");
 		}, time);
+	}
+	
+	function update_table() {
+		$.ajax({
+			url: "/update_table",
+			cache: false,
+			success: function (html) {
+				$('#reminders').html(html);
+			}
+		});
 	}
 	
 </script>

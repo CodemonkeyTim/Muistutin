@@ -1,0 +1,8 @@
+<% Reminder.find(:all, :order => "due_to").each do |reminder| %>
+	<div id="<%= reminder.id %>_reminder" class="reminder" onclick="fill_manager_with_data(<%= reminder.id%>);">
+		<div class="reminder_contents"><%= reminder.content %></div>
+		<div class="reminder_dates"><%= reminder.due_to.strftime("%d.%m.%Y") %></div>
+		<div class="reminder_times"><%= reminder.due_to.strftime("%H:%M") %></div>
+	</div>
+	<div class="clearer"></div>
+<% end %>
