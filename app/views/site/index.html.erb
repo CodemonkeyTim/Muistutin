@@ -61,33 +61,27 @@
 	}
 	
 	function create_new() {
-		content = $('#manager_content').val();
-		date = $('#manager_date').val();
-		time = $('#manager_time').val();
-			
-		var url = "/create_new/?content="+content+"&date="+date+"&time="+time;
-			
-		$.ajax({
-			url: url,
-			cache: false,
-			success: function(response) {
-				values = response.split(";");
-				set_feedback(values[0], values[1], 5000);
-				update_table();
-			}
-		});
-	}
-	
-	function save_current() {
-		var id = $('#reminder_id').val();
-		if (!(id == "-1")) {
+		if (validate_data()) {
 			content = $('#manager_content').val();
 			date = $('#manager_date').val();
 			time = $('#manager_time').val();
-			
-			var url = "/save_reminder/"+id+"?content="+content+"&date="+date+"&time="+time;
-			
-			$.ajax({
+				
+			var url = "/create_new/?content="+content+"&date="+date+"&time="+time;
+				
+			$.ajax({date = $('#manager_date').val();
+				time = $('#manager_time').val();
+				
+				var url = "/save_reminder/"+id+"?content="+content+"&date="+date+"&time="+time;
+				
+				$.ajax({
+					url: url,
+					cache: false,
+					success: function(response) {
+						values = response.split(";");
+						set_feedback(values[0], values[1], 5000);
+						update_table();
+					}
+				});
 				url: url,
 				cache: false,
 				success: function(response) {
@@ -96,6 +90,29 @@
 					update_table();
 				}
 			});
+		}
+	}
+	
+	function save_current() {
+		var id = $('#reminder_id').val();
+		if (!(id == "-1")) {
+			if (validate_data()) {
+				content = $('#manager_content').val();
+				date = $('#manager_date').val();
+				time = $('#manager_time').val();
+				
+				var url = "/save_reminder/"+id+"?content="+content+"&date="+date+"&time="+time;
+				
+				$.ajax({
+					url: url,
+					cache: false,
+					success: function(response) {
+						values = response.split(";");
+						set_feedback(values[0], values[1], 5000);
+						update_table();
+					}
+				});
+			}
 		} else {
 			set_feedback("error", "Valitse ensin muokattava muistutus", 5000);
 		}
@@ -123,6 +140,79 @@
 			set_feedback("error", "Valitse ensin poistettava muistutus", 5000);
 		}
 	}
+	
+	function validate_data() {
+		if (content_is_not_empty() && date_is_valid() && time_is_valid()) {
+			return true;
+		}
+	}
+	
+	function content_is_not_empty() {
+		if ($("#manager_content").val() != "") {
+			return true;
+		} else {
+			set_feedback("error", "Muistutuskentt&auml ei voi olla tyhj&auml.", 5000);
+			return false;
+		}
+	}
+	
+	function date_is_valid() {
+		if (date_has_three_integers_separated_by_dot()) {
+			return true;
+		} else {
+			set_feedback("error", "P&aumliv&aumlm&auml&aumlr&aumlss&auml on jotain vikaa.", 5000);
+			return false;
+		}
+	}
+	
+	function date_has_three_integers_separated_by_dot() {
+		date = $("#manager_date").val();
+		date_arr = date.split('.');
+		
+		if (date_arr.length < 3 || date_arr.length > 3) {
+			return false;
+		}
+		
+		if (date_arr[0].isNaN) {
+			return false;
+		}
+		if (date_arr[1].isNaN) {
+			return false;
+		}
+		if (date_arr[2].isNaN) {
+			return false;
+		}
+		return true;
+	}
+	
+	function time_is_valid() {
+		if (time_has_two_integers_separated_by_colon) {
+			return true;
+		} else {
+			set_feedback("error", "Kellonajassa on jotain vikaa.", 5000);
+			return false;
+		}
+	}
+	
+	function time_has_two_integers_separated_by_colon() {
+		time = $("#manager_time").val();
+		time_arr = time.split(":");
+		
+		if (time_arr.length < 2 || time_arr.length > 2) {
+			return false;
+		}
+		
+		if (time_arr[0].isNaN) {
+			return false;
+		}
+		if (time_arr[1].isNaN) {
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
 	
 	function set_feedback(nature, feedback, time_to_show) {
 		if (nature == "error") {
