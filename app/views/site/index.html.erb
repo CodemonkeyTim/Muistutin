@@ -68,20 +68,7 @@
 				
 			var url = "/create_new/?content="+content+"&date="+date+"&time="+time;
 				
-			$.ajax({date = $('#manager_date').val();
-				time = $('#manager_time').val();
-				
-				var url = "/save_reminder/"+id+"?content="+content+"&date="+date+"&time="+time;
-				
-				$.ajax({
-					url: url,
-					cache: false,
-					success: function(response) {
-						values = response.split(";");
-						set_feedback(values[0], values[1], 5000);
-						update_table();
-					}
-				});
+			$.ajax({
 				url: url,
 				cache: false,
 				success: function(response) {
@@ -173,20 +160,20 @@
 			return false;
 		}
 		
-		if (date_arr[0].isNaN) {
+		if (isNaN(date_arr[0])) {
 			return false;
 		}
-		if (date_arr[1].isNaN) {
+		if (isNaN(date_arr[1])) {
 			return false;
 		}
-		if (date_arr[2].isNaN) {
+		if (isNaN(date_arr[2])) {
 			return false;
 		}
 		return true;
 	}
 	
 	function time_is_valid() {
-		if (time_has_two_integers_separated_by_colon) {
+		if (time_has_two_integers_separated_by_colon()) {
 			return true;
 		} else {
 			set_feedback("error", "Kellonajassa on jotain vikaa.", 5000);
@@ -196,17 +183,22 @@
 	
 	function time_has_two_integers_separated_by_colon() {
 		time = $("#manager_time").val();
-		time_arr = time.split(":");
 		
-		if (time_arr.length < 2 || time_arr.length > 2) {
-			return false;
-		}
-		
-		if (time_arr[0].isNaN) {
-			return false;
-		}
-		if (time_arr[1].isNaN) {
-			return false;
+		if (time != "") {
+			time_arr = time.split(":");
+			
+			if (time_arr.length < 2 || time_arr.length > 2) {
+				return false;
+			}
+			
+			if (isNaN(time_arr[0]) || time_arr[0] == "") {
+				return false;
+			}
+			if (isNaN(time_arr[1]) || time_arr[1] == "") {
+				return false;
+			}
+		} else {
+			return true;
 		}
 		
 		return true;

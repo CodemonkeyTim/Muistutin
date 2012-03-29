@@ -39,16 +39,22 @@ class AjaxController < ApplicationController
     
     #Following block assings value to due_to, so that if the parameter values are given, the
     # due_to will be set to defaults, which are a week from today and 12 'o clock
-    if params[:date] == "" && params[:time] == ""
+    if (params[:date] == "") & (params[:time] == "")
       due_to = "#{(Time.now+604800).strftime("%y-%m-%d")} 12:00:00"
     else
-      if params[:date] == "" && !params[:time] == ""
+      if (params[:date] == "") & (!params[:time] == "")
         due_to = "#{(Time.now+604800).strftime("%y-%m-%d")} #{params[:time]}:00"
       else
-        date_arr = params[:date].split('.')
-        time = "#{params[:time]}:00"
+        if (!params[:date] == "") & (params[:time] == "")
+          date_arr = params[:date].split('.')
+          
+          due_to = "#{date_arr[2]}-#{date_arr[1]}-#{date_arr[0]} 12:00:00"
+        else
+          date_arr = params[:date].split('.')
+          time = "#{params[:time]}:00"
     
-        due_to = "#{date_arr[2]}-#{date_arr[1]}-#{date_arr[0]} #{time}"
+          due_to = "#{date_arr[2]}-#{date_arr[1]}-#{date_arr[0]} #{time}"
+        end
       end
     end
     
